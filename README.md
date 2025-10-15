@@ -9,6 +9,8 @@ gem install evrblk
 ## Example
 
 ```ruby
+require "evrblk"
+
 api_key_id = "key_alfa_z141pKeFzfmGGyYlUyPsbF"
 api_key_secret = <<-END
 -----BEGIN EC PRIVATE KEY-----
@@ -18,7 +20,8 @@ AwEHoUQDQgAE0m8+ZVijytLp01dsupG7QF8ZpjX5UmP20wj/sluPdoHW3BgiiyCn
 -----END EC PRIVATE KEY-----
 END
 
-grackle_client = Evrblk::Grackle::Preview::Client.new(Evrblk::AuthN::RequestSigner.new(api_key_id, api_key_secret))
+signer = Evrblk::AuthN::RequestSigner.new(api_key_id, api_key_secret)
+grackle_client = Evrblk::Grackle::Preview::Client.new(signer, "localhost:8000")
 
 grackle_client.create_namespace(
     name: "mynamespace"
@@ -31,7 +34,6 @@ grackle_client.acquire_lock(
     process_id: "process1",
     expires_at: (now.to_i + 60*5) * (10 ** 9) + now.nsec # expires in 5 min
 )
-
 ```
 
 ## License
