@@ -9,7 +9,7 @@ module Evrblk::MyAccount::Preview
     
       def get_account(request_hash)
         request = Evrblk::HashConverter.hash_to_grpc_message(request_hash, Evrblk::MyAccount::Preview::GetAccountRequest)
-        @grpc.get_account(request, metadata: @request_signer.sign(request))
+        @grpc.get_account(request, metadata: @request_signer.sign(request, "MyAccount", "GetAccount"))
       end
 
     end

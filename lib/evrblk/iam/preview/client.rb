@@ -9,72 +9,72 @@ module Evrblk::IAM::Preview
     
       def create_role(request_hash)
         request = Evrblk::HashConverter.hash_to_grpc_message(request_hash, Evrblk::IAM::Preview::CreateRoleRequest)
-        @grpc.create_role(request, metadata: @request_signer.sign(request))
+        @grpc.create_role(request, metadata: @request_signer.sign(request, "IAM", "CreateRole"))
       end
 
       def get_role(request_hash)
         request = Evrblk::HashConverter.hash_to_grpc_message(request_hash, Evrblk::IAM::Preview::GetRoleRequest)
-        @grpc.get_role(request, metadata: @request_signer.sign(request))
+        @grpc.get_role(request, metadata: @request_signer.sign(request, "IAM", "GetRole"))
       end
 
       def update_role(request_hash)
         request = Evrblk::HashConverter.hash_to_grpc_message(request_hash, Evrblk::IAM::Preview::UpdateRoleRequest)
-        @grpc.update_role(request, metadata: @request_signer.sign(request))
+        @grpc.update_role(request, metadata: @request_signer.sign(request, "IAM", "UpdateRole"))
       end
       
       def list_roles(request_hash)
         request = Evrblk::HashConverter.hash_to_grpc_message(request_hash, Evrblk::IAM::Preview::ListRolesRequest)
-        @grpc.list_roles(request, metadata: @request_signer.sign(request))
+        @grpc.list_roles(request, metadata: @request_signer.sign(request, "IAM", "ListRoles"))
       end
 
       def delete_role(request_hash)
         request = Evrblk::HashConverter.hash_to_grpc_message(request_hash, Evrblk::IAM::Preview::DeleteRoleRequest)
-        @grpc.delete_role(request, metadata: @request_signer.sign(request))
+        @grpc.delete_role(request, metadata: @request_signer.sign(request, "IAM", "DeleteRole"))
       end
 
       def create_user(request_hash)
         request = Evrblk::HashConverter.hash_to_grpc_message(request_hash, Evrblk::IAM::Preview::CreateUserRequest)
-        @grpc.create_user(request, metadata: @request_signer.sign(request))
+        @grpc.create_user(request, metadata: @request_signer.sign(request, "IAM", "CreateUser"))
       end
 
       def get_user(request_hash)
         request = Evrblk::HashConverter.hash_to_grpc_message(request_hash, Evrblk::IAM::Preview::GetUserRequest)
-        @grpc.get_user(request, metadata: @request_signer.sign(request))
+        @grpc.get_user(request, metadata: @request_signer.sign(request, "IAM", "GetUser"))
       end
 
       def update_user(request_hash)
         request = Evrblk::HashConverter.hash_to_grpc_message(request_hash, Evrblk::IAM::Preview::UpdateUserRequest)
-        @grpc.update_user(request, metadata: @request_signer.sign(request))
+        @grpc.update_user(request, metadata: @request_signer.sign(request, "IAM", "UpdateUser"))
       end
 
       def list_users(request_hash)
         request = Evrblk::HashConverter.hash_to_grpc_message(request_hash, Evrblk::IAM::Preview::ListUsersRequest)
-        @grpc.list_users(request, metadata: @request_signer.sign(request))
+        @grpc.list_users(request, metadata: @request_signer.sign(request, "IAM", "ListUsers"))
       end
       
       def delete_user(request_hash)
         request = Evrblk::HashConverter.hash_to_grpc_message(request_hash, Evrblk::IAM::Preview::DeleteUserRequest)
-        @grpc.delete_user(request, metadata: @request_signer.sign(request))
+        @grpc.delete_user(request, metadata: @request_signer.sign(request, "IAM", "DeleteUser"))
       end
 
       def create_api_key(request_hash)
         request = Evrblk::HashConverter.hash_to_grpc_message(request_hash, Evrblk::IAM::Preview::CreateApiKeyRequest)
-        @grpc.create_api_key(request, metadata: @request_signer.sign(request))
+        @grpc.create_api_key(request, metadata: @request_signer.sign(request, "IAM", "CreateApiKey"))
       end
 
       def get_api_key(request_hash)
         request = Evrblk::HashConverter.hash_to_grpc_message(request_hash, Evrblk::IAM::Preview::GetApiKeyRequest)
-        @grpc.get_api_key(request, metadata: @request_signer.sign(request))
+        @grpc.get_api_key(request, metadata: @request_signer.sign(request, "IAM", "GetApiKey"))
       end
 
       def list_api_keys(request_hash)
         request = Evrblk::HashConverter.hash_to_grpc_message(request_hash, Evrblk::IAM::Preview::ListApiKeysRequest)
-        @grpc.list_api_keys(request, metadata: @request_signer.sign(request))
+        @grpc.list_api_keys(request, metadata: @request_signer.sign(request, "IAM", "ListApiKeys"))
       end
 
       def delete_api_key(request_hash)
         request = Evrblk::HashConverter.hash_to_grpc_message(request_hash, Evrblk::IAM::Preview::DeleteApiKeyRequest)
-        @grpc.delete_api_key(request, metadata: @request_signer.sign(request))
+        @grpc.delete_api_key(request, metadata: @request_signer.sign(request, "IAM", "DeleteApiKey"))
       end
     end
   end

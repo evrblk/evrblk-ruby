@@ -16,9 +16,9 @@ module Evrblk
         end
       end
 
-      def sign(request, timestamp)
+      def sign(request, timestamp, service, method)
         # Serialize timestamp and request body
-        data = serialize_int64(timestamp) + marshal_protobuf(request)
+        data = serialize_int64(timestamp) + service + "." + method + marshal_protobuf(request)
 
         # Sign a digest using SHA-256 with the private key
         signature = @private_key.sign(OpenSSL::Digest::SHA256.new, data)

@@ -16,12 +16,12 @@ module Evrblk
         end
       end
 
-      def sign(request)
+      def sign(request, service, method)
         # Take current time
         timestamp = Time.now.to_i
 
         # Sign the request body with the timestamp
-        signature = @signer.sign(request, timestamp)
+        signature = @signer.sign(request, timestamp, service, method)
 
         # Return gRPC headers for authentication
         return {
