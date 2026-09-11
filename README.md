@@ -21,7 +21,7 @@ AwEHoUQDQgAE0m8+ZVijytLp01dsupG7QF8ZpjX5UmP20wj/sluPdoHW3BgiiyCn
 END
 
 signer = Evrblk::AuthN::RequestSigner.new(api_key_id, api_key_secret)
-grackle_client = Evrblk::Grackle::Preview::Client.new(signer, "localhost:8000")
+grackle_client = Evrblk::Grackle::V1Beta::Client.new(signer, "localhost:8000")
 
 grackle_client.create_namespace(
     name: "mynamespace"

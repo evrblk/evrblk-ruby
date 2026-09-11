@@ -5,21 +5,13 @@ require "evrblk/authn/alfa"
 require "evrblk/authn/bravo"
 require "evrblk/authn/request_signer"
 
-require "evrblk/grackle/preview/api_pb"
-require "evrblk/grackle/preview/api_services_pb"
-require "evrblk/grackle/preview/client"
+require "evrblk/grackle/v1beta/api_pb"
+require "evrblk/grackle/v1beta/api_services_pb"
+require "evrblk/grackle/v1beta/client"
 
-require "evrblk/iam/preview/api_pb"
-require "evrblk/iam/preview/api_services_pb"
-require "evrblk/iam/preview/client"
-
-require "evrblk/moab/preview/api_pb"
-require "evrblk/moab/preview/api_services_pb"
-require "evrblk/moab/preview/client"
-
-require "evrblk/myaccount/preview/api_pb"
-require "evrblk/myaccount/preview/api_services_pb"
-require "evrblk/myaccount/preview/client"
+require "evrblk/moab/v0/api_pb"
+require "evrblk/moab/v0/api_services_pb"
+require "evrblk/moab/v0/client"
 
 require "evrblk/hash_converter"
 

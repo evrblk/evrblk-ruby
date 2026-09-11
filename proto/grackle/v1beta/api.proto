@@ -1,0 +1,886 @@
+syntax = "proto3";
+
+package com.evrblk.grackle.v1beta;
+
+option go_package = "github.com/evrblk/evrblk-go/grackle/v1beta;grackle";
+option ruby_package = "Evrblk::Grackle::V1Beta";
+
+service GrackleApi {
+  rpc CreateNamespace(CreateNamespaceRequest) returns (CreateNamespaceResponse) {}
+  rpc ListNamespaces(ListNamespacesRequest) returns (ListNamespacesResponse) {}
+  rpc GetNamespace(GetNamespaceRequest) returns (GetNamespaceResponse) {}
+  rpc DeleteNamespace(DeleteNamespaceRequest) returns (DeleteNamespaceResponse) {}
+  rpc UpdateNamespace(UpdateNamespaceRequest) returns (UpdateNamespaceResponse) {}
+
+  rpc CreateSemaphore(CreateSemaphoreRequest) returns (CreateSemaphoreResponse) {}
+  rpc ListSemaphores(ListSemaphoresRequest) returns (ListSemaphoresResponse) {}
+  rpc GetSemaphore(GetSemaphoreRequest) returns (GetSemaphoreResponse) {}
+  rpc AcquireSemaphore(AcquireSemaphoreRequest) returns (AcquireSemaphoreResponse) {}
+  rpc ReleaseSemaphore(ReleaseSemaphoreRequest) returns (ReleaseSemaphoreResponse) {}
+  rpc UpdateSemaphore(UpdateSemaphoreRequest) returns (UpdateSemaphoreResponse) {}
+  rpc DeleteSemaphore(DeleteSemaphoreRequest) returns (DeleteSemaphoreResponse) {}
+  rpc ListSemaphoreHolders(ListSemaphoreHoldersRequest) returns (ListSemaphoreHoldersResponse) {}
+  rpc CreateSemaphoreLease(CreateSemaphoreLeaseRequest) returns (CreateSemaphoreLeaseResponse) {}
+  rpc RevokeSemaphoreLease(RevokeSemaphoreLeaseRequest) returns (RevokeSemaphoreLeaseResponse) {}
+  rpc RefreshSemaphoreLease(RefreshSemaphoreLeaseRequest) returns (RefreshSemaphoreLeaseResponse) {}
+  rpc ListSemaphoreLeases(ListSemaphoreLeasesRequest) returns (ListSemaphoreLeasesResponse) {}
+  rpc GetSemaphoreLease(GetSemaphoreLeaseRequest) returns (GetSemaphoreLeaseResponse) {}
+
+  rpc CreateWaitGroup(CreateWaitGroupRequest) returns (CreateWaitGroupResponse) {}
+  rpc UpdateWaitGroup(UpdateWaitGroupRequest) returns (UpdateWaitGroupResponse) {}
+  rpc ListWaitGroups(ListWaitGroupsRequest) returns (ListWaitGroupsResponse) {}
+  rpc GetWaitGroup(GetWaitGroupRequest) returns (GetWaitGroupResponse) {}
+  rpc DeleteWaitGroup(DeleteWaitGroupRequest) returns (DeleteWaitGroupResponse) {}
+  rpc CompleteJobsFromWaitGroup(CompleteJobsFromWaitGroupRequest) returns (CompleteJobsFromWaitGroupResponse) {}
+  rpc ListWaitGroupCompletedJobs(ListWaitGroupCompletedJobsRequest) returns (ListWaitGroupCompletedJobsResponse) {}
+  rpc WaitForWaitGroup(WaitForWaitGroupRequest) returns (WaitForWaitGroupResponse) {}
+
+  rpc AcquireLock(AcquireLockRequest) returns (AcquireLockResponse) {}
+  rpc ReleaseLock(ReleaseLockRequest) returns (ReleaseLockResponse) {}
+  rpc GetLock(GetLockRequest) returns (GetLockResponse) {}
+  rpc DeleteLock(DeleteLockRequest) returns (DeleteLockResponse) {}
+  rpc ListLocks(ListLocksRequest) returns (ListLocksResponse) {}
+  rpc CreateLockLease(CreateLockLeaseRequest) returns (CreateLockLeaseResponse) {}
+  rpc RevokeLockLease(RevokeLockLeaseRequest) returns (RevokeLockLeaseResponse) {}
+  rpc RefreshLockLease(RefreshLockLeaseRequest) returns (RefreshLockLeaseResponse) {}
+  rpc ListLockLeases(ListLockLeasesRequest) returns (ListLockLeasesResponse) {}
+  rpc GetLockLease(GetLockLeaseRequest) returns (GetLockLeaseResponse) {}
+
+  rpc CreateBarrier(CreateBarrierRequest) returns (CreateBarrierResponse) {}
+  rpc ListBarriers(ListBarriersRequest) returns (ListBarriersResponse) {}
+  rpc GetBarrier(GetBarrierRequest) returns (GetBarrierResponse) {}
+  rpc DeleteBarrier(DeleteBarrierRequest) returns (DeleteBarrierResponse) {}
+  rpc UpdateBarrier(UpdateBarrierRequest) returns (UpdateBarrierResponse) {}
+  rpc ArriveAtBarrier(ArriveAtBarrierRequest) returns (ArriveAtBarrierResponse) {}
+  rpc WaitAtBarrier(WaitAtBarrierRequest) returns (WaitAtBarrierResponse) {}
+  rpc ListBarrierParticipants(ListBarrierParticipantsRequest) returns (ListBarrierParticipantsResponse) {}
+}
+
+message CreateNamespaceRequest {
+  string name = 1;
+  string description = 2;
+  map<string, string> metadata = 3;
+}
+
+message CreateNamespaceResponse {
+  Namespace namespace = 1;
+}
+
+message ListNamespacesRequest {
+  string pagination_token = 1;
+  int32 limit = 2;
+}
+
+message ListNamespacesResponse {
+  repeated Namespace namespaces = 1;
+  string next_pagination_token = 2;
+  string previous_pagination_token = 3;
+}
+
+message GetNamespaceRequest {
+  string namespace_name = 1;
+}
+
+message GetNamespaceResponse {
+  Namespace namespace = 1;
+}
+
+message DeleteNamespaceRequest {
+  string namespace_name = 1;
+}
+
+message DeleteNamespaceResponse {}
+
+message UpdateNamespaceRequest {
+  string namespace_name = 1;
+  string description = 2;
+  map<string, string> metadata = 3;
+  // Optimistic concurrency: must equal the namespace's current version or the
+  // update is rejected.
+  int64 expected_version = 4;
+}
+
+message UpdateNamespaceResponse {
+  Namespace namespace = 1;
+}
+
+message CreateSemaphoreRequest {
+  string namespace_name = 1;
+  string semaphore_name = 2;
+  string description = 3;
+  // Total capacity: the maximum sum of holder weights that can be held at once.
+  int64 permits = 4;
+  map<string, string> metadata = 5;
+}
+
+message CreateSemaphoreResponse {
+  Semaphore semaphore = 1;
+}
+
+message ListSemaphoresRequest {
+  string namespace_name = 1;
+  string pagination_token = 2;
+  int32 limit = 3;
+}
+
+message ListSemaphoresResponse {
+  repeated Semaphore semaphores = 1;
+  string next_pagination_token = 2;
+  string previous_pagination_token = 3;
+}
+
+message GetSemaphoreRequest {
+  string namespace_name = 1;
+  string semaphore_name = 2;
+}
+
+message GetSemaphoreResponse {
+  Semaphore semaphore = 1;
+}
+
+message AcquireSemaphoreRequest {
+  string namespace_name = 1;
+  string semaphore_name = 2;
+  // Lease the permits are acquired under; the hold is released when this lease is
+  // released, revoked, or expires. Re-acquiring under the same lease adjusts the
+  // existing hold's weight rather than creating a second hold.
+  string lease_id = 3;
+  // Number of permits to acquire. The acquire is all-or-nothing: it succeeds only
+  // when weight permits are free. Must be > 0 and <= the semaphore's permits.
+  int64 weight = 4;
+  // How long to block waiting for permits to become available. 0 returns
+  // immediately (non-blocking try); see AcquireOutcome.
+  int32 timeout_seconds = 5;
+  map<string, string> metadata = 6;
+}
+
+message AcquireSemaphoreResponse {
+  Semaphore semaphore = 1;
+  AcquireOutcome outcome = 2;
+}
+
+// AcquireOutcome is the terminal result of an AcquireLock or AcquireSemaphore
+// call. These outcomes describe a request that was valid and processed —
+// malformed requests (bad lease id, weight <= 0, weight exceeding permits) and
+// missing resources are reported as gRPC errors (InvalidArgument / NotFound),
+// never as an outcome.
+enum AcquireOutcome {
+  ACQUIRE_OUTCOME_INVALID = 0;
+  // ACQUIRED: the lease now holds the lock/semaphore.
+  ACQUIRE_OUTCOME_ACQUIRED = 1;
+  // UNAVAILABLE: a non-blocking attempt (timeout_seconds = 0) found the
+  // primitive held by someone else and returned without waiting.
+  ACQUIRE_OUTCOME_UNAVAILABLE = 2;
+  // TIMED_OUT: the call blocked until timeout_seconds elapsed without the
+  // primitive ever becoming available.
+  ACQUIRE_OUTCOME_TIMED_OUT = 3;
+}
+
+message ReleaseSemaphoreRequest {
+  string namespace_name = 1;
+  string semaphore_name = 2;
+  string lease_id = 3;
+}
+
+message ReleaseSemaphoreResponse {
+  Semaphore semaphore = 1;
+}
+
+message UpdateSemaphoreRequest {
+  string namespace_name = 1;
+  string semaphore_name = 2;
+  string description = 3;
+  // New total capacity. Cannot be lowered below the permits currently held
+  // (active_holds).
+  int64 permits = 4;
+  map<string, string> metadata = 5;
+  // Optimistic concurrency: must equal the semaphore's current version or the
+  // update is rejected.
+  int64 expected_version = 6;
+}
+
+message UpdateSemaphoreResponse {
+  Semaphore semaphore = 1;
+}
+
+message DeleteSemaphoreRequest {
+  string namespace_name = 1;
+  string semaphore_name = 2;
+}
+
+message DeleteSemaphoreResponse {}
+
+message ListSemaphoreHoldersRequest {
+  string namespace_name = 1;
+  string semaphore_name = 2;
+  string pagination_token = 3;
+  int32 limit = 4;
+}
+
+message ListSemaphoreHoldersResponse {
+  repeated SemaphoreHolder holders = 1;
+  string next_pagination_token = 2;
+  string previous_pagination_token = 3;
+}
+
+message CreateSemaphoreLeaseRequest {
+  string namespace_name = 1;
+  // Caller-supplied identifier of the owning process (free-form, e.g.
+  // "host-123/pid-4567"). Surfaced on holders for diagnostics.
+  string process_id = 2;
+  // Lease lifetime in seconds, measured from now. The lease (and everything held
+  // under it) is released automatically if not refreshed before it elapses.
+  int64 ttl_seconds = 3;
+  map<string, string> metadata = 4;
+}
+
+message CreateSemaphoreLeaseResponse {
+  Lease lease = 1;
+}
+
+message RevokeSemaphoreLeaseRequest {
+  string namespace_name = 1;
+  string lease_id = 2;
+}
+
+message RevokeSemaphoreLeaseResponse {}
+
+message RefreshSemaphoreLeaseRequest {
+  string namespace_name = 1;
+  string lease_id = 2;
+  // New lifetime in seconds from now; extends the lease and every hold it owns.
+  int64 ttl_seconds = 3;
+}
+
+message RefreshSemaphoreLeaseResponse {
+  Lease lease = 1;
+}
+
+message ListSemaphoreLeasesRequest {
+  string namespace_name = 1;
+  string pagination_token = 2;
+  int32 limit = 3;
+}
+
+message ListSemaphoreLeasesResponse {
+  repeated Lease leases = 1;
+  string next_pagination_token = 2;
+  string previous_pagination_token = 3;
+}
+
+message GetSemaphoreLeaseRequest {
+  string namespace_name = 1;
+  string lease_id = 2;
+}
+
+message GetSemaphoreLeaseResponse {
+  Lease lease = 1;
+}
+
+// Lease is a time-bounded ownership token. It is the unit that holds locks and
+// semaphore permits: a client creates a lease, then acquires locks/semaphores
+// under it, and must keep it alive by refreshing before it expires (a heartbeat).
+// When a lease expires or is revoked, the server automatically releases
+// everything held under it — so a crashed client never leaves dangling holds.
+// Locks and semaphores use separate leases (CreateLockLease vs
+// CreateSemaphoreLease) and a lease is scoped to a single namespace.
+message Lease {
+  string lease_id = 1;
+  // Caller-supplied identifier of the owning process (free-form). Server does not
+  // interpret it; it is echoed back for diagnostics.
+  string process_id = 2;
+  // Creation time, Unix nanoseconds.
+  int64 created_at = 3;
+  // Absolute expiration time, Unix nanoseconds. Once the server clock passes this,
+  // the lease and all holds under it are released. Push it forward with
+  // Refresh{Lock,Semaphore}Lease.
+  int64 expires_at = 4;
+  map<string, string> metadata = 5;
+}
+
+// Semaphore is a weighted counting semaphore: it admits concurrent holders as
+// long as the sum of their weights stays within permits. Holders are leases;
+// expired holders are pruned, so the active_* fields always reflect only holders
+// whose leases are still valid.
+message Semaphore {
+  string name = 1;
+  string description = 2;
+  // Creation / last-modification time, Unix nanoseconds.
+  int64 created_at = 3;
+  int64 updated_at = 4;
+  // Monotonic version, bumped on every successful update. Pass as expected_version
+  // in UpdateSemaphore for optimistic concurrency control.
+  int64 version = 5;
+  // Total capacity (maximum sum of holder weights held at once).
+  int64 permits = 6;
+  // Currently consumed capacity: the sum of all active holders' weights
+  // (0 <= active_holds <= permits).
+  int64 active_holds = 7;
+  // Number of distinct leases currently holding permits.
+  int64 active_holders_count = 8;
+  map<string, string> metadata = 9;
+  // Time of the most recent acquire attempt (successful or not), Unix nanoseconds.
+  // Useful for reaping idle semaphores.
+  int64 last_activity_at = 10;
+}
+
+// SemaphoreHolder is one lease's hold on a semaphore (see ListSemaphoreHolders).
+message SemaphoreHolder {
+  // The lease holding these permits.
+  string lease_id = 1;
+  // When the hold was acquired, Unix nanoseconds.
+  int64 locked_at = 2;
+  // Number of permits this holder consumes.
+  int64 weight = 3;
+  map<string, string> metadata = 4;
+}
+
+message CreateWaitGroupRequest {
+  string namespace_name = 1;
+  string wait_group_name = 2;
+  string description = 3;
+  // Total number of jobs that must complete before the group is COMPLETED.
+  int64 counter = 4;
+  // Absolute deadline, Unix nanoseconds. If the group has not completed by then it
+  // becomes EXPIRED.
+  int64 expires_at = 5;
+  map<string, string> metadata = 6;
+  // Retention after finishing: the group is automatically deleted this many
+  // seconds after it finishes (completes or expires).
+  int64 delete_after_finished_seconds = 7;
+}
+
+message CreateWaitGroupResponse {
+  WaitGroup wait_group = 1;
+}
+
+message UpdateWaitGroupRequest {
+  string namespace_name = 1;
+  string wait_group_name = 2;
+  string description = 3;
+  // New total number of jobs required to complete the group.
+  int64 counter = 4;
+  // New absolute deadline, Unix nanoseconds.
+  int64 expires_at = 5;
+  map<string, string> metadata = 6;
+  // Optimistic concurrency: must equal the wait group's current version or the
+  // update is rejected.
+  int64 expected_version = 7;
+  // New retention period (seconds after finishing) before automatic deletion.
+  int64 delete_after_finished_seconds = 8;
+}
+
+message UpdateWaitGroupResponse {
+  WaitGroup wait_group = 1;
+}
+
+message ListWaitGroupsRequest {
+  string namespace_name = 1;
+  string pagination_token = 2;
+  int32 limit = 3;
+}
+
+message ListWaitGroupsResponse {
+  repeated WaitGroup wait_groups = 1;
+  string next_pagination_token = 2;
+  string previous_pagination_token = 3;
+}
+
+message GetWaitGroupRequest {
+  string namespace_name = 1;
+  string wait_group_name = 2;
+}
+
+message GetWaitGroupResponse {
+  WaitGroup wait_group = 1;
+}
+
+message DeleteWaitGroupRequest {
+  string namespace_name = 1;
+  string wait_group_name = 2;
+}
+
+message DeleteWaitGroupResponse {}
+
+message CompleteJobsFromWaitGroupRequest {
+  string namespace_name = 1;
+  string wait_group_name = 2;
+  repeated CompleteJobRequest jobs = 3;
+}
+
+message CompleteJobRequest {
+  // Caller-chosen identifier of the completed job. Completion is idempotent per
+  // job_id: completing the same id twice counts once, so retries are safe.
+  string job_id = 1;
+  map<string, string> metadata = 2;
+}
+
+message CompleteJobsFromWaitGroupResponse {
+  WaitGroup wait_group = 1;
+}
+
+message ListWaitGroupCompletedJobsRequest {
+  string namespace_name = 1;
+  string wait_group_name = 2;
+  string pagination_token = 3;
+  int32 limit = 4;
+}
+
+message ListWaitGroupCompletedJobsResponse {
+  repeated WaitGroupJob jobs = 1;
+  string next_pagination_token = 2;
+  string previous_pagination_token = 3;
+}
+
+message WaitForWaitGroupRequest {
+  string namespace_name = 1;
+  string wait_group_name = 2;
+  // How long to block waiting for the group to finish. 0 returns immediately with
+  // the current state; see WaitGroupWaitOutcome.
+  int32 timeout_seconds = 3;
+}
+
+message WaitForWaitGroupResponse {
+  WaitGroup wait_group = 1;
+  WaitGroupWaitOutcome outcome = 2;
+}
+
+// WaitGroupWaitOutcome is the terminal result of a WaitForWaitGroup call. The
+// wait group's intrinsic lifecycle state is also available on
+// WaitGroup.status; this outcome reports why this particular call returned.
+enum WaitGroupWaitOutcome {
+  WAIT_GROUP_WAIT_OUTCOME_INVALID = 0;
+  // COMPLETED: all jobs were completed.
+  WAIT_GROUP_WAIT_OUTCOME_COMPLETED = 1;
+  // EXPIRED: the wait group's expires_at passed while still active.
+  WAIT_GROUP_WAIT_OUTCOME_EXPIRED = 2;
+  // TIMED_OUT: timeout_seconds elapsed while the wait group was still active.
+  WAIT_GROUP_WAIT_OUTCOME_TIMED_OUT = 3;
+}
+
+// WaitGroup tracks completion of a fixed set of jobs — a distributed, durable
+// sync.WaitGroup for fan-in of up to millions of jobs. It starts with counter
+// jobs outstanding; each job reported via CompleteJobsFromWaitGroup increments
+// completed_jobs, and the group becomes COMPLETED once completed_jobs reaches
+// counter (or EXPIRED if expires_at passes first). WaitForWaitGroup blocks until
+// it finishes.
+message WaitGroup {
+  string name = 1;
+  string description = 2;
+  // Creation / last-modification time, Unix nanoseconds.
+  int64 created_at = 3;
+  int64 updated_at = 4;
+  // Monotonic version, bumped on every successful update. Pass as expected_version
+  // in UpdateWaitGroup for optimistic concurrency control.
+  int64 version = 5;
+  // Absolute deadline, Unix nanoseconds; the group becomes EXPIRED if it has not
+  // completed by then.
+  int64 expires_at = 6;
+  // Total number of jobs required to complete the group.
+  int64 counter = 7;
+  // Number of distinct jobs completed so far (0 <= completed_jobs <= counter).
+  int64 completed_jobs = 8;
+  map<string, string> metadata = 9;
+  WaitGroupStatus status = 10;
+  // Retention period: the group is automatically deleted this many seconds after
+  // finished_at.
+  int64 delete_after_finished_seconds = 11;
+  // When the group finished (reached COMPLETED or EXPIRED), Unix nanoseconds; 0
+  // while still ACTIVE.
+  int64 finished_at = 12;
+  // Time of the most recent activity (e.g. a job completion), Unix nanoseconds.
+  int64 last_activity_at = 13;
+}
+
+// WaitGroupStatus is the lifecycle state of a wait group. A wait group starts
+// ACTIVE, becomes COMPLETED once all jobs are completed, or EXPIRED once
+// expires_at passes while still active. Finished (COMPLETED or EXPIRED) wait
+// groups are deleted automatically once delete_after_finished_seconds elapses.
+enum WaitGroupStatus {
+  WAIT_GROUP_STATUS_INVALID = 0;
+  WAIT_GROUP_STATUS_ACTIVE = 1;
+  WAIT_GROUP_STATUS_EXPIRED = 2;
+  WAIT_GROUP_STATUS_COMPLETED = 3;
+}
+
+// WaitGroupJob is one completed job recorded against a wait group (see
+// ListWaitGroupCompletedJobs).
+message WaitGroupJob {
+  string job_id = 1;
+  // When the job was reported complete, Unix nanoseconds.
+  int64 completed_at = 2;
+  map<string, string> metadata = 3;
+}
+
+message AcquireLockRequest {
+  string namespace_name = 1;
+  // Lock name, a '/'-separated path (e.g. "users/123/profile"). Paths form a
+  // hierarchy: a lock conflicts with locks on its ancestor and descendant paths
+  // (see Lock), so guarding a subtree does not require enumerating every leaf.
+  string lock_name = 2;
+  // true acquires the lock exclusively (one holder); false acquires it shared
+  // (multiple shared holders coexist, but block exclusive acquirers).
+  bool exclusive = 3;
+  // Lease the lock is held under; the lock is released when this lease is
+  // released, revoked, or expires. Re-acquiring under a lease that already holds
+  // the lock just refreshes it.
+  string lease_id = 4;
+  // How long to block waiting for the lock. 0 returns immediately (non-blocking
+  // try); see AcquireOutcome.
+  int32 timeout_seconds = 5;
+  map<string, string> metadata = 6;
+}
+
+message AcquireLockResponse {
+  Lock lock = 1;
+  AcquireOutcome outcome = 2;
+  // When outcome is not ACQUIRED, a best-effort hint at what the lock was
+  // blocked on. Diagnostic only: it is a point-in-time snapshot of the last
+  // acquire attempt and may be stale by the time it is read, so clients must
+  // not build control flow on it. UNSPECIFIED when the lock was acquired.
+  ContentionReason reason = 3;
+  // The locks currently blocking this acquire, to show the caller what stands
+  // in the way: the blocking ancestor lock(s) (ANCESTOR) or blocking descendant
+  // locks (DESCENDANT). Empty for PEER — there the conflicting lock is the one
+  // being acquired, already returned in the lock field above, so it is not
+  // duplicated here. Like reason this is a best-effort, point-in-time snapshot
+  // and may be stale. It is always bounded — at most 50 locks are returned (a
+  // descendant subtree may hold more) — so it is cheap and safe to read. Empty
+  // when the lock was acquired.
+  repeated Lock blocking_locks = 4;
+}
+
+// ContentionReason explains why an AcquireLock attempt found the lock
+// unavailable. Locks form a '/'-separated hierarchy (see Lock), so a request
+// can be blocked by the lock itself, by an ancestor path, or by a descendant
+// path. This is a diagnostic hint, not part of the acquire control flow —
+// branch on AcquireOutcome, not on this.
+enum ContentionReason {
+  CONTENTION_REASON_UNSPECIFIED = 0;
+  // PEER: the lock itself is held in an incompatible mode by another lease
+  // (held shared while exclusive was requested, or held exclusively).
+  CONTENTION_REASON_PEER = 1;
+  // ANCESTOR: a lock on an ancestor path blocks this acquire.
+  CONTENTION_REASON_ANCESTOR = 2;
+  // DESCENDANT: one or more locks on descendant paths block this acquire.
+  CONTENTION_REASON_DESCENDANT = 3;
+}
+
+message ReleaseLockRequest {
+  string namespace_name = 1;
+  string lock_name = 2;
+  string lease_id = 3;
+}
+
+message ReleaseLockResponse {
+  Lock lock = 1;
+}
+
+message GetLockRequest {
+  string namespace_name = 1;
+  string lock_name = 2;
+}
+
+message GetLockResponse {
+  Lock lock = 1;
+}
+
+message DeleteLockRequest {
+  string namespace_name = 1;
+  string lock_name = 2;
+}
+
+message DeleteLockResponse {}
+
+message ListLocksRequest {
+  string namespace_name = 1;
+  string pagination_token = 2;
+  int32 limit = 3;
+}
+
+message ListLocksResponse {
+  repeated Lock locks = 1;
+  string next_pagination_token = 2;
+  string previous_pagination_token = 3;
+}
+
+message CreateLockLeaseRequest {
+  string namespace_name = 1;
+  // Caller-supplied identifier of the owning process (free-form). Surfaced on lock
+  // holders for diagnostics.
+  string process_id = 2;
+  // Lease lifetime in seconds, measured from now. The lease (and every lock held
+  // under it) is released automatically if not refreshed before it elapses.
+  int64 ttl_seconds = 3;
+  map<string, string> metadata = 4;
+}
+
+message CreateLockLeaseResponse {
+  Lease lease = 1;
+}
+
+message RevokeLockLeaseRequest {
+  string namespace_name = 1;
+  string lease_id = 2;
+}
+
+message RevokeLockLeaseResponse {}
+
+message RefreshLockLeaseRequest {
+  string namespace_name = 1;
+  string lease_id = 2;
+  // New lifetime in seconds from now; extends the lease and every lock it holds.
+  int64 ttl_seconds = 3;
+}
+
+message RefreshLockLeaseResponse {
+  Lease lease = 1;
+}
+
+message ListLockLeasesRequest {
+  string namespace_name = 1;
+  string pagination_token = 2;
+  int32 limit = 3;
+}
+
+message ListLockLeasesResponse {
+  repeated Lease leases = 1;
+  string next_pagination_token = 2;
+  string previous_pagination_token = 3;
+}
+
+message GetLockLeaseRequest {
+  string namespace_name = 1;
+  string lease_id = 2;
+}
+
+message GetLockLeaseResponse {
+  Lease lease = 1;
+}
+
+// Lock is a distributed read/write (shared/exclusive) lock, held under a lease.
+// Locks are not created explicitly: the first successful AcquireLock creates the
+// lock, and it disappears once no holders remain. A lock can have many shared
+// holders at once, or a single exclusive holder, never both.
+//
+// Lock names are '/'-separated paths and form a hierarchy. An exclusive lock at
+// any path conflicts with acquires on its ancestors and descendants; a shared
+// lock blocks only exclusive acquires up and down the path. Sibling paths are
+// independent. This lets a caller guard a whole subtree without locking every
+// leaf — acquire root-to-leaf and release leaf-to-root to avoid deadlocks.
+message Lock {
+  string name = 1;
+  LockState state = 2;
+  // When the lock first became held (by its current set of holders), Unix
+  // nanoseconds.
+  int64 locked_at = 3;
+  // The leases currently holding the lock: exactly one when EXCLUSIVE_LOCKED,
+  // one or more when SHARED_LOCKED, empty when UNLOCKED.
+  repeated LockHolder lock_holders = 4;
+  // Time of the most recent acquire attempt against this lock, Unix nanoseconds.
+  int64 last_activity_at = 5;
+}
+
+// LockHolder is one lease's hold on a lock.
+message LockHolder {
+  // The lease holding the lock.
+  string lease_id = 1;
+  // When this holder acquired the lock, Unix nanoseconds.
+  int64 locked_at = 2;
+  map<string, string> metadata = 3;
+}
+
+// LockState is the current hold state of a lock.
+enum LockState {
+  LOCK_STATE_INVALID = 0;
+  // No holders (the lock effectively does not exist).
+  LOCK_STATE_UNLOCKED = 1;
+  // Held shared by one or more leases; further shared acquires succeed, exclusive
+  // acquires block.
+  LOCK_STATE_SHARED_LOCKED = 2;
+  // Held exclusively by a single lease; all other acquires block.
+  LOCK_STATE_EXCLUSIVE_LOCKED = 3;
+}
+
+// Namespace is the container for all primitives (locks, semaphores, wait groups,
+// barriers) and their leases. Names are unique per account, and every other API
+// call is scoped to a namespace. Deleting a namespace asynchronously deletes
+// everything inside it.
+message Namespace {
+  string name = 1;
+  string description = 2;
+  // Creation / last-modification time, Unix nanoseconds.
+  int64 created_at = 3;
+  int64 updated_at = 4;
+  // Monotonic version, bumped on every successful update. Pass as expected_version
+  // in UpdateNamespace for optimistic concurrency control.
+  int64 version = 5;
+  map<string, string> metadata = 6;
+}
+
+message CreateBarrierRequest {
+  string namespace_name = 1;
+  string barrier_name = 2;
+  string description = 3;
+  // Number of processes that must arrive before the barrier trips (releases) for
+  // a generation.
+  int64 expected_processes = 4;
+  // The barrier is automatically deleted this many seconds after its last
+  // activity (creation or an arrival).
+  int64 delete_inactive_after_seconds = 8;
+  map<string, string> metadata = 9;
+}
+
+message CreateBarrierResponse {
+  Barrier barrier = 1;
+}
+
+message ListBarriersRequest {
+  string namespace_name = 1;
+  string pagination_token = 2;
+  int32 limit = 3;
+}
+
+message ListBarriersResponse {
+  repeated Barrier barriers = 1;
+  string next_pagination_token = 2;
+  string previous_pagination_token = 3;
+}
+
+message GetBarrierRequest {
+  string namespace_name = 1;
+  string barrier_name = 2;
+}
+
+message GetBarrierResponse {
+  Barrier barrier = 1;
+}
+
+message DeleteBarrierRequest {
+  string namespace_name = 1;
+  string barrier_name = 2;
+}
+
+message DeleteBarrierResponse {}
+
+message UpdateBarrierRequest {
+  string namespace_name = 1;
+  string barrier_name = 2;
+  string description = 3;
+  // New number of processes required to trip the barrier.
+  int64 expected_processes = 4;
+  map<string, string> metadata = 5;
+  // Optimistic concurrency: must equal the barrier's current version or the update
+  // is rejected.
+  int64 expected_version = 6;
+  // New inactivity period (seconds) before automatic deletion.
+  int64 delete_inactive_after_seconds = 7;
+}
+
+message UpdateBarrierResponse {
+  Barrier barrier = 1;
+}
+
+message ArriveAtBarrierRequest {
+  string namespace_name = 1;
+  string barrier_name = 2;
+  // Identifier of the arriving process. Arrival is idempotent per
+  // (generation, process_id): the same process arriving twice in a generation
+  // counts once.
+  string process_id = 3;
+  // The generation the caller is arriving for; must match the barrier's current
+  // generation, otherwise the call is rejected (guards against contributing to
+  // the wrong cycle).
+  int64 expected_generation = 4;
+  map<string, string> metadata = 5;
+}
+
+message ArriveAtBarrierResponse {
+  Barrier barrier = 1;
+  // true if this arrival was the last one needed and the barrier tripped (its
+  // generation has now advanced and arrived_processes reset to 0).
+  bool all_arrived = 2;
+}
+
+message WaitAtBarrierRequest {
+  string namespace_name = 1;
+  string barrier_name = 2;
+  // The generation the caller is waiting on. The call returns once the barrier
+  // advances past it (trips). Waiting on a generation that has already passed
+  // returns immediately. WaitAtBarrier does not itself register an arrival.
+  int64 expected_generation = 3;
+  // How long to block waiting for the barrier to trip. 0 returns immediately; see
+  // BarrierWaitOutcome.
+  int32 timeout_seconds = 4;
+}
+
+message WaitAtBarrierResponse {
+  Barrier barrier = 1;
+  BarrierWaitOutcome outcome = 2;
+}
+
+// BarrierWaitOutcome is the terminal result of a WaitAtBarrier call.
+enum BarrierWaitOutcome {
+  BARRIER_WAIT_OUTCOME_INVALID = 0;
+  // TRIPPED: all expected processes arrived and the barrier advanced to the
+  // next generation.
+  BARRIER_WAIT_OUTCOME_TRIPPED = 1;
+  // TIMED_OUT: timeout_seconds elapsed before the barrier tripped.
+  BARRIER_WAIT_OUTCOME_TIMED_OUT = 2;
+}
+
+message ListBarrierParticipantsRequest {
+  string namespace_name = 1;
+  string barrier_name = 2;
+  // Which generation's arrivals to list (participant records are kept per
+  // generation).
+  int64 generation = 3;
+  string pagination_token = 4;
+  int32 limit = 5;
+}
+
+message ListBarrierParticipantsResponse {
+  repeated BarrierParticipant participants = 1;
+  string next_pagination_token = 2;
+  string previous_pagination_token = 3;
+}
+
+// Barrier is a reusable, generational rendezvous point for a fixed number of
+// processes (like a cyclic barrier). Processes call ArriveAtBarrier; once
+// expected_processes of them have arrived, the barrier "trips": all waiters are
+// released, generation advances by one, and arrived_processes resets to 0 for
+// the next cycle. The generation lets a fast process wait for exactly the cycle
+// it cares about and a slow one avoid contributing to the wrong cycle.
+message Barrier {
+  string name = 1;
+  string description = 2;
+  // Number of arrivals required to trip the barrier.
+  int64 expected_processes = 3;
+  // Arrivals recorded in the current generation so far (0 <= arrived_processes <
+  // expected_processes; reaching it trips the barrier and resets this to 0).
+  int64 arrived_processes = 4;
+  // Current cycle number, starting at 1 and incremented by exactly one on each
+  // trip.
+  int64 generation = 5;
+  // Creation / last-modification time, Unix nanoseconds.
+  int64 created_at = 6;
+  int64 updated_at = 7;
+  // Monotonic version, bumped on every successful update. Pass as expected_version
+  // in UpdateBarrier for optimistic concurrency control.
+  int64 version = 8;
+  map<string, string> metadata = 9;
+  // Time of the most recent activity (creation or an arrival), Unix nanoseconds.
+  // Drives inactivity-based auto-deletion.
+  int64 last_activity_at = 10;
+  // The barrier is automatically deleted this many seconds after last_activity_at.
+  int64 delete_inactive_after_seconds = 11;
+}
+
+// BarrierParticipant is one process's arrival in a given generation (see
+// ListBarrierParticipants).
+message BarrierParticipant {
+  string process_id = 1;
+  // When the process arrived, Unix nanoseconds.
+  int64 arrived_at = 2;
+  map<string, string> metadata = 3;
+}

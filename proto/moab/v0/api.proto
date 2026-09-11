@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-option go_package = "github.com/evrblk/evrblk-go/moab/preview;moab";
-option ruby_package = "Evrblk::Moab::Preview";
+package com.evrblk.moab.v0;
 
-package com.evrblk.moab.preview;
+option go_package = "github.com/evrblk/evrblk-go/moab/v0;moab";
+option ruby_package = "Evrblk::Moab::V0";
 
-service MoabPreviewApi {
+service MoabApi {
   rpc CreateQueue(CreateQueueRequest) returns (CreateQueueResponse) {}
   rpc GetQueue(GetQueueRequest) returns (GetQueueResponse) {}
   rpc UpdateQueue(UpdateQueueRequest) returns (UpdateQueueResponse) {}
@@ -13,6 +13,7 @@ service MoabPreviewApi {
   rpc ListQueues(ListQueuesRequest) returns (ListQueuesResponse) {}
 
   rpc GetTask(GetTaskRequest) returns (GetTaskResponse) {}
+  rpc ListTasks(ListTasksRequest) returns (ListTasksResponse) {}
   rpc Enqueue(EnqueueRequest) returns (EnqueueResponse) {}
   rpc Dequeue(DequeueRequest) returns (DequeueResponse) {}
   rpc ReportStatus(ReportStatusRequest) returns (ReportStatusResponse) {}
@@ -24,6 +25,7 @@ service MoabPreviewApi {
   rpc GetSchedule(GetScheduleRequest) returns (GetScheduleResponse) {}
   rpc UpdateSchedule(UpdateScheduleRequest) returns (UpdateScheduleResponse) {}
   rpc DeleteSchedule(DeleteScheduleRequest) returns (DeleteScheduleResponse) {}
+  rpc ListSchedules(ListSchedulesRequest) returns (ListSchedulesResponse) {}
 }
 
 // Queues APIs
@@ -48,7 +50,6 @@ message GetQueueRequest {
 
 message GetQueueResponse {
   Queue queue = 1;
-  repeated Schedule schedules = 2;
   QueueStats stats = 3;
 }
 
@@ -60,6 +61,7 @@ message UpdateQueueRequest {
   DequeuingSettings dequeuing_settings = 5;
   DeadLetterQueueConfig dead_letter_queue_config = 6;
   int64 expires_in_seconds = 7;
+  int64 expected_version = 8;
 }
 
 message UpdateQueueResponse {
@@ -72,17 +74,22 @@ message DeleteQueueRequest {
 
 message DeleteQueueResponse {}
 
-message ListQueuesRequest {}
+message ListQueuesRequest {
+  string pagination_token = 1;
+  int32 limit = 2;
+}
 
 message ListQueuesResponse {
   repeated Queue queues = 1;
+  string next_pagination_token = 2;
+  string previous_pagination_token = 3;
 }
 
 // Enqueue/Dequeue APIs
 
 message EnqueueRequest {
   string queue_name = 1;
-  repeated EnqueueRequestEntry entries = 2;  // TODO rename to tasks?
+  repeated EnqueueRequestEntry entries = 2; // TODO rename to tasks?
 }
 
 message EnqueueRequestEntry {
@@ -109,7 +116,7 @@ message EnqueueResponse {
 
 message DequeueRequest {
   string queue_name = 1;
-  int64 batch_size = 2;
+  int32 batch_size = 2;
 }
 
 message DequeueResponse {
@@ -152,12 +159,52 @@ message GetTaskResponse {
   Task task = 1;
 }
 
-message RestartTasksRequest {
+message ListTasksRequest {
   string queue_name = 1;
-  repeated string task_ids = 2;
+  string pagination_token = 2;
+  int32 limit = 3;
+  // Unset (TASK_STATE_INVALID) lists tasks in every state. Otherwise, lists
+  // only tasks currently in this state.
+  TaskState state = 4;
 }
 
-message RestartTasksResponse {}
+message ListTasksResponse {
+  repeated Task tasks = 1;
+  string next_pagination_token = 2;
+  string previous_pagination_token = 3;
+}
+
+message RestartTasksRequest {
+  string queue_name = 1;
+  repeated RestartTasksRequestEntry entries = 2;
+}
+
+message RestartTasksRequestEntry {
+  string task_id = 1;
+  // 0 - now (mirrors EnqueueRequestEntry's scheduled_at).
+  int64 scheduled_at = 2;
+  // 0 - queue default (mirrors EnqueueRequestEntry's expires_at).
+  int64 expires_at = 3;
+}
+
+message RestartTasksResponse {
+  repeated RestartTasksResponseEntry entries = 1;
+}
+
+message RestartTasksResponseEntry {
+  enum Result {
+    RESULT_INVALID = 0;
+    RESULT_RESTARTED = 1;
+    RESULT_NOT_FOUND = 2;
+    RESULT_NOT_DEAD = 3;
+    RESULT_DEDUPE_CONFLICT = 4;
+  }
+
+  string task_id = 1;
+  Result result = 2;
+  // Set iff result == RESULT_RESTARTED.
+  Task task = 3;
+}
 
 message PurgeQueueRequest {
   string queue_name = 1;
@@ -204,6 +251,7 @@ message UpdateScheduleRequest {
   int64 keepalive_timeout_in_seconds = 8;
   RetryStrategy retry_strategy = 9;
   string timezone = 10;
+  int64 expected_version = 11;
 }
 
 message UpdateScheduleResponse {
@@ -217,6 +265,18 @@ message DeleteScheduleRequest {
 
 message DeleteScheduleResponse {}
 
+message ListSchedulesRequest {
+  string queue_name = 1;
+  string pagination_token = 2;
+  int32 limit = 3;
+}
+
+message ListSchedulesResponse {
+  repeated Schedule schedules = 1;
+  string next_pagination_token = 2;
+  string previous_pagination_token = 3;
+}
+
 // Main models
 
 message Task {
@@ -229,7 +289,15 @@ message Task {
   string dedupe_key = 7;
   int32 attempts = 8;
   string thread_id = 9;
+  TaskState state = 10;
   // debug info payload
+}
+
+enum TaskState {
+  TASK_STATE_INVALID = 0;
+  TASK_STATE_ENQUEUED = 1;
+  TASK_STATE_IN_PROGRESS = 2;
+  TASK_STATE_DEAD = 3;
 }
 
 message Schedule {
@@ -270,8 +338,11 @@ message Queue {
 
 message DeadLetterQueueConfig {
   bool enable = 1;
-  int64 max_size = 2;                     // 0 - unlimited
-  int64 retention_period_in_seconds = 3;  // TODO units? 0 - unlimited
+  int64 max_size = 2; // 0 - unlimited
+  // Seconds. Required whenever this message is set, regardless of enable;
+  // bounded, no "unlimited" sentinel — every dead task always has a real
+  // retention deadline.
+  int64 retention_period_in_seconds = 3;
 }
 
 // message CompletedTasksSetConfig {
@@ -293,10 +364,16 @@ message TokenBucketRateLimiting {
 }
 
 message QueueStats {
-  uint64 enqueued_tasks_count = 1;
-  uint64 in_progress_tasks_count = 2;
-  uint64 dead_tasks_count = 3;
-  int64 age_of_oldest_enqueued_task = 4;
+  int64 enqueued_tasks_count = 1;
+  int64 in_progress_tasks_count = 2;
+  int64 dead_tasks_count = 3;
+  int64 processed_tasks_count = 4;
+  int64 expired_tasks_count = 5;
+  // Age of the oldest task actually available to dequeue right now, not
+  // every ENQUEUED task: a non-head member of a thread whose head is busy
+  // (IN_PROGRESS) is excluded, since it cannot be dequeued until the head
+  // finishes.
+  int64 age_of_oldest_enqueued_task = 6;
 }
 
 enum IntervalUnit {
