@@ -2,7 +2,7 @@
 # Source: grackle/v1beta/api.proto for package 'Evrblk.Grackle.V1Beta'
 
 require 'grpc'
-require 'grackle/v1beta/api_pb'
+require 'evrblk/grackle/v1beta/api_pb'
 
 module Evrblk
   module Grackle

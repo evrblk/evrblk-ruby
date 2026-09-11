@@ -2,7 +2,7 @@
 # Source: moab/v0/api.proto for package 'Evrblk.Moab.V0'
 
 require 'grpc'
-require 'moab/v0/api_pb'
+require 'evrblk/moab/v0/api_pb'
 
 module Evrblk
   module Moab
