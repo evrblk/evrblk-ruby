@@ -8,6 +8,9 @@ AllCops:
     # Manual, non-shipped usage example (excluded from the gem's packaged
     # files in evrblk.gemspec too) rather than part of the test suite.
     - "test.rb"
+    # `bundler-cache: true` in CI installs gems into vendor/bundle inside the
+    # checkout; without this, rubocop lints every dependency's source too.
+    - "vendor/**/*"
 
 # This is a small SDK gem; per-class/per-method YARD docs aren't required.
 Style/Documentation:
