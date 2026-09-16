@@ -3,7 +3,7 @@
 module Evrblk::Grackle::V1Beta
   class Client
     def initialize(request_signer, endpoint)
-      @g= Evrblk::Grackle::V1Beta::GrackleApi::Stub.new(endpoint, :this_channel_is_insecure)
+      @grpc = Evrblk::Grackle::V1Beta::GrackleApi::Stub.new(endpoint, :this_channel_is_insecure)
       @request_signer = request_signer
     end
 

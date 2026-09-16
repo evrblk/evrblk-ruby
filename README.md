@@ -14,9 +14,7 @@ require "evrblk"
 api_key_id = "key_alfa_z141pKeFzfmGGyYlUyPsbF"
 api_key_secret = <<-END
 -----BEGIN EC PRIVATE KEY-----
-MHcCAQEEIN33cCNGxsuxwMaJ2jWvWcgxBSVr8HV7WUUSKGc71/BtoAoGCCqGSM49
-AwEHoUQDQgAE0m8+ZVijytLp01dsupG7QF8ZpjX5UmP20wj/sluPdoHW3BgiiyCn
-/pMwYptUs0yJUtUZ/0wzEyp8PgAWWhxglw==
+SoME=reAl=PriVaTE=keY
 -----END EC PRIVATE KEY-----
 END
 

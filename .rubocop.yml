@@ -1,0 +1,70 @@
+AllCops:
+  TargetRubyVersion: 3.1
+  NewCops: enable
+  SuggestExtensions: false
+  Exclude:
+    - "lib/**/*_pb.rb"
+    - "lib/**/*_services_pb.rb"
+    # Manual, non-shipped usage example (excluded from the gem's packaged
+    # files in evrblk.gemspec too) rather than part of the test suite.
+    - "test.rb"
+
+# This is a small SDK gem; per-class/per-method YARD docs aren't required.
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: always
+
+# The codebase consistently uses double-quoted strings.
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/QuotedSymbols:
+  EnforcedStyle: double_quotes
+
+# The request signers concatenate raw protobuf bytes (arbitrary binary data)
+# with UTF-8 literals. Interpolation and concatenation coerce mixed encodings
+# differently, so this is left as `+` rather than "fixed" to interpolation.
+Style/StringConcatenation:
+  Enabled: false
+
+# The namespace here mirrors the depth of the generated protobuf modules;
+# both compact (`module A::B::C`) and nested forms show up by design.
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+# Recursive protobuf-descriptor walking is inherently branchy.
+Metrics/AbcSize:
+  Exclude:
+    - "lib/evrblk/hash_converter.rb"
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - "lib/evrblk/hash_converter.rb"
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - "lib/evrblk/hash_converter.rb"
+
+Layout/LineLength:
+  Max: 120
+  Exclude:
+    # One RPC method per line; a handful of the longer RPC names push past
+    # the limit.
+    - "lib/evrblk/moab/v0/client.rb"
+    - "lib/evrblk/grackle/v1beta/client.rb"
+
+Metrics/MethodLength:
+  Max: 20
+
+Metrics/ClassLength:
+  Max: 150
+  Exclude:
+    - "lib/evrblk/moab/v0/client.rb"
+    - "lib/evrblk/grackle/v1beta/client.rb"
+
+Metrics/BlockLength:
+  Exclude:
+    - "test/**/*_test.rb"
+    - "*.gemspec"

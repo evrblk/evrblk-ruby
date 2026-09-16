@@ -16,5 +16,4 @@ require "evrblk/moab/v0/client"
 require "evrblk/hash_converter"
 
 module Evrblk
-
 end

@@ -3,7 +3,7 @@
 module Evrblk::Moab::V0
   class Client
     def initialize(request_signer, endpoint)
-      @g= Evrblk::Moab::V0::MoabApi::Stub.new(endpoint, :this_channel_is_insecure)
+      @grpc = Evrblk::Moab::V0::MoabApi::Stub.new(endpoint, :this_channel_is_insecure)
       @request_signer = request_signer
     end
 
